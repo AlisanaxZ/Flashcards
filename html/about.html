@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, inital-scale=1.0">
+    <title>Flashcards</title>
+    <link rel="stylesheet" href="/css/main.css">
+
+    <link href="/images/weblogo.png" rel="shortcut icon">
+</head>
+
+<body>
+    <div class="navbar">
+        <ul>
+            <li>
+                <img src="/images/logo.png" alt="logo" id="logo">
+            </li>
+            <li>
+                <a href="index.html">Home</a>
+            </li>
+            <li>
+                <a href="about.html">About</a>
+            </li>
+            <li><button>Create</button></li>
+            <div class="account">
+                <li id="name">username</li>
+                <li><img src="/images/profile.png" alt="profile" id="profile" onclick="dropdown()"></li>
+            </div>
+        </ul>
+        <div class="dropdown" id="dropdown">
+            <a href="info.html">Profile</a>
+            <a href="login.html">Log out</a>
+        </div>
+        <div class="main">
+            <div class="intro">
+                <h1>About us</h1>
+                <h2>Members</h2>
+                <p>Hoàng Công Bảo Long - Leader</p><br>
+                <p>Lê Minh Đức - Programmer</p><br>
+                <p>Kiều Đức Anh -mProgrammer</p><br>
+                <p>Nguyễn Quỳnh Mai - Programmer</p><br>
+                <p>Phạm Xuân Việt - Programmer</p><br>
+                <h2>About Flashcards</h2>
+                <p>Flashcards là một app đơn giản nhưng có công dụng đa năng, có thể dùng để học từ vựng hay ôn tập một cách hiệu quả.</p>
+            </div>
+        </div>
+        <script>
+            function dropdown() {
+                var dropdown = document.getElementById("dropdown")
+                if (dropdown.style.display == "block") {
+                    dropdown.style.display = "none"
+                } else {
+                    dropdown.style.display = "block"
+                }
+            }
+        </script>
+</body>
+
+</html>

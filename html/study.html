@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, inital-scale=1.0">
+    <title>Flashcards</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/flashcard.css">
+
+    <link href="/images/weblogo.png" rel="shortcut icon">
+</head>
+
+<body>
+    <div class="navbar">
+        <ul>
+            <li>
+                <img src="/images/logo.png" alt="logo" id="logo">
+            </li>
+            <li>
+                <a href="index.html">Home</a>
+            </li>
+            <li>
+                <a href="about.html">About</a>
+            </li>
+            <li><button>Create</button></li>
+            <span id="time"></span>
+            <div class="account">
+                <li id="name">username</li>
+                <li><img src="/images/profile.png" alt="profile" id="profile" onclick="dropdown()"></li>
+            </div>
+        </ul>
+        <div class="dropdown" id="dropdown">
+            <a href="info.html">Profile</a>
+            <a href="login.html">Log out</a>
+        </div>
+        <div class="main">
+
+            <div id="maincontainer">
+
+                <div class="thecard" tabindex="0">
+                    <div class="thefront">
+                        <p id="thefront">This is the front of the card. It contains important information pneumonoultramicroscopicsilicovolcanoconiosis. pneumonoultramicroscopicsilicovolcanoconiosis Please see overleaf for more details.</p>
+                    </div>
+
+                    <div class="theback">
+                        <button><p id="theback">Your use of this site is subject to the terms and conditions governing this and all transactions.</p></button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="nextcard" id="nextcard">
+                <button id="back" onclick="backcard()">←</button>
+                <button id="next" onclick="nextcard()">→</button>
+            </div>
+        </div>
+        <script>
+            var front = ["abstruse", "enfranchise", "multifarious"];
+            var back = ["difficult to understand", "grant freedom to, as from slavery or servitude", "having many aspects"];
+            var i = 0;
+            var k = 1;
+
+            document.getElementById("thefront").innerHTML = front[i];
+            document.getElementById("theback").innerHTML = back[i];
+
+            function nextcard() {
+                i = i + k;
+                if (i < front.length) {
+                    document.getElementById("thefront").innerHTML = front[i];
+                    document.getElementById("theback").innerHTML = back[i];
+                } else {
+                    i = i - k;
+                }
+            }
+
+            function backcard() {
+                i = i - k;
+                if (i >= 0) {
+                    document.getElementById("thefront").innerHTML = front[i];
+                    document.getElementById("theback").innerHTML = back[i];
+                } else {
+                    i = i + k;
+                }
+            }
+
+            function dropdown() {
+                var dropdown = document.getElementById("dropdown")
+                if (dropdown.style.display == "block") {
+                    dropdown.style.display = "none"
+                } else {
+                    dropdown.style.display = "block"
+                }
+            };
+
+            var dailySum = 0;
+            var weeklySum = 0;
+            var tempSum = 0;
+
+            function startTimer(duration, display) {
+                timer()
+                const timerInterval = setInterval(timer, 1000);
+                var leg = "pomodoro"
+                var timerRunning = true
+                var start = Date.now(),
+                    diff,
+                    minutes,
+                    seconds;
+
+                function timer() {
+                    // get the number of seconds that have elapsed since 
+                    // startTimer() was called
+                    diff = duration - (((Date.now() - start) / 1000) | 0);
+
+                    // does the same job as parseInt truncates the float
+                    minutes = (diff / 60) | 0;
+                    seconds = (diff % 60) | 0;
+
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                    display.textContent = minutes + ":" + seconds;
+
+                    if (minutes == 0 && seconds == 0 && leg == "pomodoro") {
+                        clearInterval(timerInterval);
+                        pomodoroComplete();
+                    } else if (minutes == 0 && seconds == 0 && log == "break") {
+                        clearInterval(timerInterval);
+                        breakComplete();
+                    }
+
+                    if (diff <= 0) {
+                        // add one second so that the count down starts at the full duration
+                        // example 05:00 not 04:59
+                        start = Date.now() + 1000;
+                    }
+                    //run checks & log time studied in day/week
+                    tick()
+                };
+
+                function checkTimeout() {
+                    if (document.hasFocus()) {
+                        timerRunning = true
+                    } else if (leg == "pomodoro" && timerRunning == true) {
+                        dailySum -= tempSum;
+                        weeklySum -= tempSum;
+                        clearInterval(timerInterval);
+                        timerRunning = false;
+                        resetTimer();
+                    };
+                };
+                setInterval(checkTimeout, 1000);
+            };
+
+            window.onload = function() {
+                var haifiveMinutes = 60 * 25,
+                    display = document.querySelector('#time');
+                startTimer(haifiveMinutes, display);
+            };
+
+            //utility functs
+            function pomodoroComplete() {
+                tempSum = 0;
+                alert("you have completed the pomodoro");
+                leg = "break";
+                var fiveMinutes = 60 * 5,
+                    display = document.querySelector('#time');
+                startTimer(fiveMinutes, display);
+            };
+
+            function breakComplete() {
+                tempSum = 0;
+                alert("break time finished");
+                leg = "pomodoro";
+                var haifiveMinutes = 60 * 25,
+                    display = document.querySelector('#time');
+                startTimer(haifiveMinutes, display);
+            };
+
+            function resetTimer() {
+                alert("Window has lost focus, resetting timer");
+                var haifiveMinutes = 60 * 25,
+                    display = document.querySelector('#time');
+                startTimer(haifiveMinutes, display);
+                timerRunning = true;
+            };
+
+            function tick() {
+                updateTimer();
+                var resetCheck = -1;
+                resetCheck = resetSavedTime();
+                if (resetCheck == 0) {
+                    console.log("weeklyTimeReset");
+                } else if (resetCheck == 1) {
+                    console.log("dailyTimeReset");
+                };
+            };
+
+            //daily/weekly resets
+            function updateTimer() {
+                tempSum += 1;
+                dailySum += 1;
+                weeklySum += 1;
+                dailyHours = (((dailySum - (dailySum % 60)) / 60) - (((dailySum - (dailySum % 60)) / 60) & 60)) / 60;
+                dailyMins = ((dailySum - (dailyHours * 3600)) - ((dailySum - (dailyHours * 3600)) % 60)) / 60;
+                dailySecs = (dailySum - (dailyHours * 3600) - (dailyMins * 60));
+                weeklyHours = (((weeklySum - (weeklySum % 60)) / 60) - (((weeklySum - (weeklySum % 60)) / 60) & 60)) / 60;
+                weeklyMins = ((weeklySum - (weeklyHours * 3600)) - ((weeklySum - (weeklyHours * 3600)) % 60)) / 60;
+                weeklySecs = (weeklySum - (weeklyHours * 3600) - (weeklyMins * 60));
+                console.log("daily study time " + dailyHours + " hours " + dailyMins + " minutes " + dailySecs + " seconds");
+                console.log("weekly study time " + weeklyHours + " hours " + weeklyMins + " minutes " + weeklySecs + " seconds");
+            };
+
+
+            //daily/weekly resets
+            function resetSavedTime() {
+                const now = new Date()
+                if (now.getDay() == "1") {
+                    dailySum = 0;
+                    weeklySum = 0;
+                    console.log("resetting weekly time");
+                    return (0)
+                } else if (now.getHours() == "0" && now.getMinutes() == "0" && now.getSeconds() == "0") {
+                    dailySum = 0;
+                    console.log("resetting daily time");
+                    return (1)
+                };
+            };
+        </script>
+</body>
+
+</html>
